@@ -1,57 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:orientation="vertical">
 
-    <GridLayout
+    <Button
+        android:id="@+id/btnPublicar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="1"
-        android:rowCount="5"
-        android:padding="16dp">
+        android:text="Crear Publicación" />
 
-        <EditText
-            android:id="@+id/etPostText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Escribe tu publicación aquí"
-            android:layout_marginBottom="8dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp" />
 
-        <ImageView
-            android:id="@+id/ivPostImage"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#E0E0E0"
-            android:clickable="true"
-            android:contentDescription="Imagen de publicación"
-            android:focusable="true"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnPost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Publicar"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnGoToProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ir al Perfil"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnGoChat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chat" />
-
-    </GridLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
