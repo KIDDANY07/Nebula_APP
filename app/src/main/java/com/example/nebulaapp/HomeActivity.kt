@@ -1,14 +1,12 @@
 package com.example.nebulaapp
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nebulaapp.Publicacion
-import com.example.nebulaapp.PublicacionActivity
-import com.example.nebulaapp.PublicacionAdapter
-import com.example.nebulaapp.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,24 +22,48 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var publicacionAdapter: PublicacionAdapter
 
+    // Variable para guardar el nombre de usuario recibido
+    private var username: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
+        // Recibir el nombre de usuario desde LoginActivity
+        username = intent.getStringExtra("USERNAME")
+
+        // Verificar si el nombre de usuario es nulo
+        if (username.isNullOrEmpty()) {
+            Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
+            finish() // Cerrar la actividad si no hay usuario
+            return
+        }
+
+        // Inicializar RecyclerView y su Adapter
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         publicacionAdapter = PublicacionAdapter(this, emptyList())
         recyclerView.adapter = publicacionAdapter
 
+        // Cargar publicaciones desde la base de datos
         loadPublicaciones()
 
+        // Configurar los botones para publicar y ver el perfil
         findViewById<View>(R.id.btnPublicar).setOnClickListener {
             val intent = Intent(this, PublicacionActivity::class.java)
+            intent.putExtra("USERNAME", username)  // Enviar el nombre de usuario
+            startActivity(intent)
+        }
+
+        findViewById<View>(R.id.btnPerfil).setOnClickListener {
+            val intent = Intent(this, PerfilActivity::class.java)
+            intent.putExtra("USERNAME", username)  // Pasar el nombre de usuario correctamente
             startActivity(intent)
         }
     }
 
+    // Función para cargar las publicaciones en la interfaz
     private fun loadPublicaciones() {
         CoroutineScope(Dispatchers.Main).launch {
             val publicaciones = getPublicacionesDesdeBaseDeDatos()
@@ -49,6 +71,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    // Suspensión para obtener publicaciones desde la base de datos
     private suspend fun getPublicacionesDesdeBaseDeDatos(): List<Publicacion> {
         return withContext(Dispatchers.IO) {
             val url = "jdbc:postgresql://10.0.2.2:5432/Nebula"

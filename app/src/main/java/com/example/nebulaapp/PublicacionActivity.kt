@@ -7,16 +7,14 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.PreparedStatement
@@ -28,54 +26,88 @@ class PublicacionActivity : AppCompatActivity() {
     private lateinit var btnSeleccionarImagen: Button
     private lateinit var btnPublicar: Button
     private lateinit var ivImagen: ImageView
-    private var selectedImageUri: Uri? = null
+
+    private var username: String? = null  // Variable para el usuario
+    private var imagenSeleccionada: ByteArray? = null  // Imagen seleccionada como byte array
 
     companion object {
-        const val IMAGE_REQUEST_CODE = 1001
+        private const val REQUEST_CODE_SELECT_IMAGE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_publicacion)
 
+        // Vincular vistas con sus IDs del XML
         etTexto = findViewById(R.id.etTexto)
         btnSeleccionarImagen = findViewById(R.id.btnSeleccionarImagen)
         btnPublicar = findViewById(R.id.btnPublicar)
         ivImagen = findViewById(R.id.ivImagen)
 
+        // Obtener el nombre del usuario del Intent
+        username = intent.getStringExtra("USERNAME")
+
+        // Configurar eventos de los botones
         btnSeleccionarImagen.setOnClickListener {
-            // Abrir la galería para seleccionar una imagen
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, IMAGE_REQUEST_CODE)
+            abrirGaleria()
         }
 
         btnPublicar.setOnClickListener {
-            val texto = etTexto.text.toString()
-            if (texto.isEmpty() || selectedImageUri == null) {
-                Toast.makeText(this, "Por favor, completa el texto y selecciona una imagen.", Toast.LENGTH_SHORT).show()
+            val texto = etTexto.text.toString().trim()
+
+            if (texto.isEmpty()) {
+                Toast.makeText(this, "Por favor, ingrese un texto.", Toast.LENGTH_SHORT).show()
             } else {
-                CoroutineScope(Dispatchers.Main).launch {
-                    val success = publicar(texto, selectedImageUri!!)
-                    if (success) {
-                        Toast.makeText(this@PublicacionActivity, "Publicación exitosa.", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this@PublicacionActivity, "Error al publicar. Intente nuevamente.", Toast.LENGTH_SHORT).show()
-                    }
+                username?.let {
+                    realizarPublicacion(it, texto)
+                } ?: run {
+                    Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
+    private fun abrirGaleria() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            selectedImageUri = data?.data
-            ivImagen.setImageURI(selectedImageUri)
+        if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
+            val selectedImageUri: Uri? = data?.data
+            selectedImageUri?.let { uri ->
+                val inputStream: InputStream? = contentResolver.openInputStream(uri)
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                ivImagen.setImageBitmap(bitmap)  // Mostrar la imagen seleccionada
+                imagenSeleccionada = bitmapToByteArray(bitmap)  // Convertir a byte array para guardar en la BD
+            }
         }
     }
 
-    private suspend fun publicar(texto: String, imageUri: Uri): Boolean {
+    private fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        return stream.toByteArray()
+    }
+
+    private fun realizarPublicacion(username: String, texto: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val publicacionExitosa = insertarPublicacionEnBaseDeDatos(username, texto, imagenSeleccionada)
+            if (publicacionExitosa) {
+                Toast.makeText(this@PublicacionActivity, "Publicación realizada con éxito.", Toast.LENGTH_SHORT).show()
+                finish()  // Finalizar la actividad
+            } else {
+                Toast.makeText(this@PublicacionActivity, "Error al realizar la publicación.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private suspend fun insertarPublicacionEnBaseDeDatos(
+        username: String,
+        texto: String,
+        imagen: ByteArray?
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             val url = "jdbc:postgresql://10.0.2.2:5432/Nebula"
             val user = "postgres"
@@ -87,35 +119,38 @@ class PublicacionActivity : AppCompatActivity() {
             try {
                 connection = DriverManager.getConnection(url, user, pass)
 
-                // Convertir la imagen seleccionada a byte array
-                val imageBytes = imageUriToByteArray(imageUri)
-
-                // Consulta para insertar la publicación
-                val query = "INSERT INTO public.publicaciones (usuario_id, texto, imagen) VALUES (?, ?, ?)"
-                preparedStatement = connection.prepareStatement(query).apply {
-                    setInt(1, 1) // Cambia 1 por el ID del usuario logueado
-                    setString(2, texto)
-                    setBytes(3, imageBytes)
+                // Buscar el ID del usuario basado en su nombre
+                val queryUsuario = "SELECT id FROM public.usuarios WHERE usuario = ?"
+                preparedStatement = connection.prepareStatement(queryUsuario).apply {
+                    setString(1, username)
                 }
+                val resultSet = preparedStatement.executeQuery()
 
-                preparedStatement.executeUpdate()
-                return@withContext true
+                if (resultSet.next()) {
+                    val usuarioId = resultSet.getInt("id")
 
+                    // Insertar la publicación
+                    val queryPublicacion = """
+                        INSERT INTO public.publicaciones (usuario_id, texto, imagen, fecha_creacion)
+                        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                    """
+                    preparedStatement = connection.prepareStatement(queryPublicacion).apply {
+                        setInt(1, usuarioId)
+                        setString(2, texto)
+                        setBytes(3, imagen)  // Guardar la imagen como byte array
+                    }
+                    preparedStatement.executeUpdate()
+                    return@withContext true
+                } else {
+                    return@withContext false  // Usuario no encontrado
+                }
             } catch (e: SQLException) {
                 e.printStackTrace()
-                return@withContext false
+                return@withContext false  // Error en la base de datos
             } finally {
                 preparedStatement?.close()
                 connection?.close()
             }
         }
-    }
-
-    private fun imageUriToByteArray(imageUri: Uri): ByteArray? {
-        val inputStream = contentResolver.openInputStream(imageUri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream) // Puedes ajustar el formato y la calidad
-        return stream.toByteArray()
     }
 }

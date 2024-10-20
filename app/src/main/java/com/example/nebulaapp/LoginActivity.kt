@@ -32,8 +32,8 @@ class LoginActivity : AppCompatActivity() {
         btnLogin = findViewById(R.id.btnLogin)
 
         btnLogin.setOnClickListener {
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
+            val username = etUsername.text.toString().trim()
+            val password = etPassword.text.toString().trim()
 
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show()
@@ -42,11 +42,11 @@ class LoginActivity : AppCompatActivity() {
                     val loginSuccess = loginUser(username, password)
                     if (loginSuccess) {
                         Toast.makeText(this@LoginActivity, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show()
-                        // Redirigir a HomeActivity con el nombre de usuario
+                        // Redirigir a HomeActivity
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                        intent.putExtra("username", username)
+                        intent.putExtra("USERNAME", username) // Pasar el nombre de usuario
                         startActivity(intent)
-                        finish()
+                        finish() // Finalizar LoginActivity
                     } else {
                         Toast.makeText(this@LoginActivity, "Credenciales incorrectas. Intente de nuevo.", Toast.LENGTH_SHORT).show()
                     }

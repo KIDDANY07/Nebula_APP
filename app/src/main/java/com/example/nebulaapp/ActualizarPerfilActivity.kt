@@ -51,13 +51,18 @@ class ActualizarPerfilActivity : AppCompatActivity() {
         btnUpdate = findViewById(R.id.btnSave)
 
         // Obtener el nombre de usuario pasado desde PerfilActivity
-        username = intent.getStringExtra("USERNAME")
+        username = intent.getStringExtra("USERNAME") // Cambiado a la misma clave
+
+        // Verifica que el username no sea nulo o vacío
+        if (username.isNullOrEmpty()) {
+            Toast.makeText(this, "Error: No se recibió el nombre de usuario.", Toast.LENGTH_SHORT).show()
+            finish() // Cierra la actividad si no hay nombre de usuario
+            return
+        }
 
         // Cargar información del usuario si se recibió el nombre
-        username?.let {
-            CoroutineScope(Dispatchers.Main).launch {
-                loadUserData(it)
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            loadUserData(username!!)
         }
 
         ivProfileImage.setOnClickListener {
@@ -141,7 +146,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                     setString(3, correo)
                     setString(4, usuario)
                     setString(5, descripcion) // Agregar descripción
-                    setBytes(6, imageBytes)
+                    setBytes(6, imageBytes) // Manejo de imagen
                     setString(7, username) // Usar el nombre de usuario original para actualizar
                 }
 
