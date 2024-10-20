@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
 
     <EditText
         android:id="@+id/etTexto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#F06292"
+        android:gravity="top|start"
         android:hint="Escribe tu publicación aquí"
         android:inputType="textMultiLine"
         android:lines="4"
-        android:gravity="top|start"
-        android:padding="8dp" />
+        android:padding="8dp"
+        />
 
     <Button
         android:id="@+id/btnSeleccionarImagen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seleccionar Imagen" />
+        android:backgroundTint="#F06292"
+        android:text="Seleccionar Imagen"
+        app:cornerRadius="8dp" />
 
     <Button
         android:id="@+id/btnPublicar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Publicar" />
+        android:backgroundTint="#F06292"
+        android:text="Publicar"
+        app:cornerRadius="8dp" />
 
     <ImageView
         android:id="@+id/ivImagen"
@@ -34,5 +42,15 @@
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop" />
+
+    <Button
+        android:id="@+id/btnRegresar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:text="Volver"
+        android:textColor="#F06292"
+        android:textSize="16dp"
+        app:cornerRadius="8dp" />
 
 </LinearLayout>

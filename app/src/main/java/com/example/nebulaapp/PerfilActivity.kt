@@ -26,6 +26,7 @@ class PerfilActivity : AppCompatActivity() {
     private lateinit var tvUsername: TextView
     private lateinit var tvDescription: TextView
     private lateinit var btnEditProfile: Button
+    private lateinit var btnBack: Button
 
     private var username: String? = null
 
@@ -39,6 +40,7 @@ class PerfilActivity : AppCompatActivity() {
         tvUsername = findViewById(R.id.tvUsername)
         tvDescription = findViewById(R.id.tvDescription)
         btnEditProfile = findViewById(R.id.btnEditProfile)
+        btnBack = findViewById(R.id.btnBack)
 
         // Obtener el nombre del usuario desde el Intent
         username = intent.getStringExtra("USERNAME")
@@ -58,6 +60,14 @@ class PerfilActivity : AppCompatActivity() {
             val intent = Intent(this, ActualizarPerfilActivity::class.java)
             intent.putExtra("USERNAME", username)
             startActivity(intent)
+        }
+
+        // Configurar el evento click del botón de regresar
+        btnBack.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("USERNAME", username)
+            startActivity(intent)
+            finish()
         }
     }
 

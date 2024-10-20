@@ -30,8 +30,9 @@ class ActualizarPerfilActivity : AppCompatActivity() {
     private lateinit var etDescripcion: EditText
     private lateinit var ivProfileImage: ImageView
     private lateinit var btnUpdate: Button
+    private lateinit var btnRegresar: Button
     private var selectedImageUri: Uri? = null
-    private var username: String? = null // Nombre de usuario recibido de la actividad anterior
+    private var username: String? = null
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
@@ -49,6 +50,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
         etDescripcion = findViewById(R.id.etDescripcion)
         ivProfileImage = findViewById(R.id.ivProfileImage)
         btnUpdate = findViewById(R.id.btnSave)
+        btnRegresar = findViewById(R.id.btnRegresar)
 
         // Obtener el nombre de usuario pasado desde PerfilActivity
         username = intent.getStringExtra("USERNAME")
@@ -93,6 +95,11 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        // Listener para el botón de regresar
+        btnRegresar.setOnClickListener {
+            finish()
         }
     }
 

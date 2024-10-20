@@ -26,9 +26,10 @@ class PublicacionActivity : AppCompatActivity() {
     private lateinit var btnSeleccionarImagen: Button
     private lateinit var btnPublicar: Button
     private lateinit var ivImagen: ImageView
+    private lateinit var btnBack: Button
 
-    private var username: String? = null  // Variable para el usuario
-    private var imagenSeleccionada: ByteArray? = null  // Imagen seleccionada como byte array
+    private var username: String? = null
+    private var imagenSeleccionada: ByteArray? = null
 
     companion object {
         private const val REQUEST_CODE_SELECT_IMAGE = 1
@@ -43,6 +44,7 @@ class PublicacionActivity : AppCompatActivity() {
         btnSeleccionarImagen = findViewById(R.id.btnSeleccionarImagen)
         btnPublicar = findViewById(R.id.btnPublicar)
         ivImagen = findViewById(R.id.ivImagen)
+        btnBack = findViewById(R.id.btnRegresar)
 
         // Obtener el nombre del usuario del Intent
         username = intent.getStringExtra("USERNAME")
@@ -50,6 +52,12 @@ class PublicacionActivity : AppCompatActivity() {
         // Configurar eventos de los botones
         btnSeleccionarImagen.setOnClickListener {
             abrirGaleria()
+        }
+        btnBack.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("USERNAME", username)
+            startActivity(intent)
+            finish()
         }
 
         btnPublicar.setOnClickListener {
@@ -79,8 +87,8 @@ class PublicacionActivity : AppCompatActivity() {
             selectedImageUri?.let { uri ->
                 val inputStream: InputStream? = contentResolver.openInputStream(uri)
                 val bitmap = BitmapFactory.decodeStream(inputStream)
-                ivImagen.setImageBitmap(bitmap)  // Mostrar la imagen seleccionada
-                imagenSeleccionada = bitmapToByteArray(bitmap)  // Convertir a byte array para guardar en la BD
+                ivImagen.setImageBitmap(bitmap)
+                imagenSeleccionada = bitmapToByteArray(bitmap)
             }
         }
     }
@@ -99,19 +107,19 @@ class PublicacionActivity : AppCompatActivity() {
 
                 // Crear una nueva publicación para pasar de vuelta a HomeActivity
                 val nuevaPublicacion = Publicacion(
-                    id = 0,  // ID temporal, puede ajustarse en la base de datos
-                    usuarioId = 0,  // ID temporal, se actualizará después
+                    id = 0,
+                    usuarioId = 0,
                     texto = texto,
                     imagen = imagenSeleccionada,
                     nombreUsuario = username,
-                    fechaCreacion = "" // Se puede dejar vacío, ya que no se usará aquí
+                    fechaCreacion = ""
                 )
 
                 // Preparar el resultado para enviar a HomeActivity
                 val intent = Intent()
                 intent.putExtra("NUEVA_PUBLICACION", nuevaPublicacion)
-                setResult(Activity.RESULT_OK, intent) // Establecer el resultado
-                finish()  // Finalizar la actividad
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             } else {
                 Toast.makeText(this@PublicacionActivity, "Error al realizar la publicación.", Toast.LENGTH_SHORT).show()
             }
@@ -152,16 +160,16 @@ class PublicacionActivity : AppCompatActivity() {
                     preparedStatement = connection.prepareStatement(queryPublicacion).apply {
                         setInt(1, usuarioId)
                         setString(2, texto)
-                        setBytes(3, imagen)  // Guardar la imagen como byte array
+                        setBytes(3, imagen)
                     }
                     preparedStatement.executeUpdate()
                     return@withContext true
                 } else {
-                    return@withContext false  // Usuario no encontrado
+                    return@withContext false
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
-                return@withContext false  // Error en la base de datos
+                return@withContext false
             } finally {
                 preparedStatement?.close()
                 connection?.close()

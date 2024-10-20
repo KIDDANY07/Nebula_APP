@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="top">
+        android:layout_gravity="top"
+        android:backgroundTint="#FBFFFFFF"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnPublicar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:layout_weight="1"
-            android:text="Crear Publicación" />
+            android:backgroundTint="#F06292"
+            android:text="Publicar"
+            app:cornerRadius="8dp" />
 
         <Button
             android:id="@+id/btnPerfil"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:layout_weight="1"
-            android:text="Ir a Perfil" />
+            android:backgroundTint="#F06292"
+            android:text="Perfil"
+            app:cornerRadius="8dp" />
+
+        <Button
+            android:id="@+id/btnChat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:backgroundTint="#F06292"
+            android:text="Chat"
+            app:cornerRadius="8dp" />
 
     </LinearLayout>
 
@@ -31,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:background="@color/gray"/>
 
 </LinearLayout>

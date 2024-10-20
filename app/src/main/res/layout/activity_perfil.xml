@@ -5,7 +5,20 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PerfilActivity">
+    tools:context=".PerfilActivity"
+    android:background="@color/white">
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+
+        android:layout_margin="16dp"
+        android:backgroundTint="#00FFFFFF"
+        android:text="Regresar"
+        android:textColor="#F06292"
+        app:cornerRadius="8dp" />
 
     <GridLayout
         android:layout_width="match_parent"
@@ -47,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:backgroundTint="#F06292"
             android:text="Actualizar Perfil"
             app:cornerRadius="8dp" />
     </GridLayout>
