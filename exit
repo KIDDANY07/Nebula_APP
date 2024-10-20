@@ -1,0 +1,29 @@
+[33mcommit 03ed73e6ad207b05fa6253f84c7c25ac80bff2ee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mpublicacion-shara[m[33m)[m
+Author: Shara <sharabernal104@gmail.com>
+Date:   Sat Oct 19 21:56:13 2024 -0500
+
+    Correccion de identacion y correccion bug en las publicaciones
+
+[33mcommit f1848f0c45cb172a1daf9a5fb489eed19cf50263[m
+Author: Shara <sharabernal104@gmail.com>
+Date:   Sat Oct 19 21:44:02 2024 -0500
+
+    Actualizacion de publicaciones en tiempo real
+
+[33mcommit 804d9bfafea0f8f8a7cb2e7b79a04ca607c30eb2[m[33m ([m[1;32mmaster[m[33m, [m[1;32mdaniel[m[33m)[m
+Author: Daniel Morales Teatino <danielmoralesteatino2004@gmail.com>
+Date:   Sat Oct 19 21:22:13 2024 -0500
+
+    Publicaciones y perfil completos
+
+[33mcommit ab2f59ea6e28a9a4c42674c76e5ac1d317d315c4[m
+Author: Daniel Morales Teatino <danielmoralesteatino2004@gmail.com>
+Date:   Sat Oct 19 16:32:02 2024 -0500
+
+    Publicaciones corregir error de que solo se ve 1 usuario
+
+[33mcommit 64caa9b544a3ff83a308cadfe7cda73196682716[m
+Author: Daniel Morales Teatino <danielmoralesteatino2004@gmail.com>
+Date:   Sat Oct 19 15:53:05 2024 -0500
+
+    Funcion completa para guardar las publicaciones
