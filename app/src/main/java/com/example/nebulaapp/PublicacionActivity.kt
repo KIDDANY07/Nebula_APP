@@ -96,6 +96,21 @@ class PublicacionActivity : AppCompatActivity() {
             val publicacionExitosa = insertarPublicacionEnBaseDeDatos(username, texto, imagenSeleccionada)
             if (publicacionExitosa) {
                 Toast.makeText(this@PublicacionActivity, "Publicación realizada con éxito.", Toast.LENGTH_SHORT).show()
+
+                // Crear una nueva publicación para pasar de vuelta a HomeActivity
+                val nuevaPublicacion = Publicacion(
+                    id = 0,  // ID temporal, puede ajustarse en la base de datos
+                    usuarioId = 0,  // ID temporal, se actualizará después
+                    texto = texto,
+                    imagen = imagenSeleccionada,
+                    nombreUsuario = username,
+                    fechaCreacion = "" // Se puede dejar vacío, ya que no se usará aquí
+                )
+
+                // Preparar el resultado para enviar a HomeActivity
+                val intent = Intent()
+                intent.putExtra("NUEVA_PUBLICACION", nuevaPublicacion)
+                setResult(Activity.RESULT_OK, intent) // Establecer el resultado
                 finish()  // Finalizar la actividad
             } else {
                 Toast.makeText(this@PublicacionActivity, "Error al realizar la publicación.", Toast.LENGTH_SHORT).show()

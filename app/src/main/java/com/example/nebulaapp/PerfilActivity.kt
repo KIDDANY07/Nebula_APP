@@ -70,6 +70,8 @@ class PerfilActivity : AppCompatActivity() {
                 tvDescription.text = it.description ?: "Sin descripción"  // Mostrar descripción
                 it.photo?.let { photoBytes ->
                     ivProfileImage.setImageBitmap(byteArrayToBitmap(photoBytes))  // Cargar imagen
+                } ?: run {
+                    ivProfileImage.setImageResource(R.drawable.user)  // Cargar imagen por defecto
                 }
             } ?: run {
                 Toast.makeText(this@PerfilActivity, "Error al cargar perfil.", Toast.LENGTH_SHORT).show()
@@ -110,6 +112,10 @@ class PerfilActivity : AppCompatActivity() {
 
             } catch (e: SQLException) {
                 e.printStackTrace()
+                // Mostrar el error de SQL
+                runOnUiThread {
+                    Toast.makeText(this@PerfilActivity, "Error en la base de datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
                 return@withContext null
             } finally {
                 resultSet?.close()
