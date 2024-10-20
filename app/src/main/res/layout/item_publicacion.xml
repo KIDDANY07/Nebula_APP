@@ -6,7 +6,6 @@
     android:padding="8dp"
     android:background="@android:color/white">
 
-    <!-- Nombre del usuario -->
     <TextView
         android:id="@+id/tvNombreUsuario"
         android:layout_width="match_parent"
@@ -14,8 +13,6 @@
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray"
         android:paddingBottom="4dp"/>
-
-    <!-- Hora de publicación -->
     <TextView
         android:id="@+id/tvFechaCreacion"
         android:layout_width="match_parent"
@@ -24,7 +21,6 @@
         android:textColor="@android:color/darker_gray"
         android:paddingBottom="4dp"/>
 
-    <!-- Texto de la publicación -->
     <TextView
         android:id="@+id/tvTexto"
         android:layout_width="match_parent"
@@ -32,11 +28,10 @@
         android:textSize="16sp"
         android:padding="4dp"/>
 
-    <!-- Imagen de la publicación -->
     <ImageView
         android:id="@+id/ivImagen"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:visibility="gone"/> <!-- Inicialmente invisible -->
+        android:visibility="gone"/> 
 </LinearLayout>

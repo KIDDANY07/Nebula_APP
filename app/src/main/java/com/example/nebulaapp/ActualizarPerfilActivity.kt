@@ -27,7 +27,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
     private lateinit var etApellido: EditText
     private lateinit var etCorreo: EditText
     private lateinit var etUsuario: EditText
-    private lateinit var etDescripcion: EditText // Nueva EditText para la descripción
+    private lateinit var etDescripcion: EditText
     private lateinit var ivProfileImage: ImageView
     private lateinit var btnUpdate: Button
     private var selectedImageUri: Uri? = null
@@ -46,17 +46,17 @@ class ActualizarPerfilActivity : AppCompatActivity() {
         etApellido = findViewById(R.id.etApellido)
         etCorreo = findViewById(R.id.etCorreo)
         etUsuario = findViewById(R.id.etUsuario)
-        etDescripcion = findViewById(R.id.etDescripcion) // Inicialización de la descripción
+        etDescripcion = findViewById(R.id.etDescripcion)
         ivProfileImage = findViewById(R.id.ivProfileImage)
         btnUpdate = findViewById(R.id.btnSave)
 
         // Obtener el nombre de usuario pasado desde PerfilActivity
-        username = intent.getStringExtra("USERNAME") // Cambiado a la misma clave
+        username = intent.getStringExtra("USERNAME")
 
         // Verifica que el username no sea nulo o vacío
         if (username.isNullOrEmpty()) {
             Toast.makeText(this, "Error: No se recibió el nombre de usuario.", Toast.LENGTH_SHORT).show()
-            finish() // Cierra la actividad si no hay nombre de usuario
+            finish()
             return
         }
 
@@ -74,7 +74,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
             val apellido = etApellido.text.toString()
             val correo = etCorreo.text.toString()
             val usuario = etUsuario.text.toString()
-            val descripcion = etDescripcion.text.toString() // Obtener la descripción
+            val descripcion = etDescripcion.text.toString()
 
             if (nombre.isEmpty() || apellido.isEmpty() || correo.isEmpty() || usuario.isEmpty() || descripcion.isEmpty()) {
                 Toast.makeText(this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show()
@@ -85,7 +85,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                         Toast.makeText(this@ActualizarPerfilActivity, "Perfil actualizado con éxito.", Toast.LENGTH_SHORT).show()
                         // Volver a PerfilActivity pasando el usuario actualizado
                         val intent = Intent(this@ActualizarPerfilActivity, PerfilActivity::class.java)
-                        intent.putExtra("USERNAME", usuario) // Pasar el usuario actualizado
+                        intent.putExtra("USERNAME", usuario)
                         startActivity(intent)
                         finish()
                     } else {
@@ -105,7 +105,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.data
-            ivProfileImage.setImageURI(selectedImageUri) // Mostrar la imagen seleccionada
+            ivProfileImage.setImageURI(selectedImageUri)
         }
     }
 
@@ -145,9 +145,9 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                     setString(2, apellido)
                     setString(3, correo)
                     setString(4, usuario)
-                    setString(5, descripcion) // Agregar descripción
-                    setBytes(6, imageBytes) // Manejo de imagen
-                    setString(7, username) // Usar el nombre de usuario original para actualizar
+                    setString(5, descripcion)
+                    setBytes(6, imageBytes)
+                    setString(7, username)
                 }
 
                 preparedStatement.executeUpdate()
@@ -184,7 +184,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                 """.trimIndent()
 
                 preparedStatement = connection.prepareStatement(query).apply {
-                    setString(1, username) // Usar el nombre de usuario como parámetro
+                    setString(1, username)
                 }
 
                 resultSet = preparedStatement.executeQuery()
@@ -194,7 +194,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                     val apellido = resultSet.getString("apellido")
                     val correo = resultSet.getString("correo")
                     val usuario = resultSet.getString("usuario")
-                    val descripcion = resultSet.getString("descripcion") // Cargar descripción
+                    val descripcion = resultSet.getString("descripcion")
                     val photo = resultSet.getBytes("photo")
 
                     // Actualizar la UI en el hilo principal
@@ -203,7 +203,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                         etApellido.setText(apellido)
                         etCorreo.setText(correo)
                         etUsuario.setText(usuario)
-                        etDescripcion.setText(descripcion) // Establecer la descripción
+                        etDescripcion.setText(descripcion)
                         if (photo != null) {
                             val bmp = BitmapFactory.decodeByteArray(photo, 0, photo.size)
                             ivProfileImage.setImageBitmap(bmp)

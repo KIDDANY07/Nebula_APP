@@ -36,7 +36,7 @@ class HomeActivity : AppCompatActivity() {
         // Verificar si el nombre de usuario es nulo
         if (username.isNullOrEmpty()) {
             Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
-            finish() // Cerrar la actividad si no hay usuario
+            finish()
             return
         }
 
@@ -53,13 +53,13 @@ class HomeActivity : AppCompatActivity() {
         // Configurar los botones para publicar y ver el perfil
         findViewById<View>(R.id.btnPublicar).setOnClickListener {
             val intent = Intent(this, PublicacionActivity::class.java)
-            intent.putExtra("USERNAME", username)  // Enviar el nombre de usuario
-            startActivityForResult(intent, REQUEST_CODE_PUBLICAR) // Usar startActivityForResult
+            intent.putExtra("USERNAME", username)
+            startActivityForResult(intent, REQUEST_CODE_PUBLICAR)
         }
 
         findViewById<View>(R.id.btnPerfil).setOnClickListener {
             val intent = Intent(this, PerfilActivity::class.java)
-            intent.putExtra("USERNAME", username)  // Pasar el nombre de usuario correctamente
+            intent.putExtra("USERNAME", username)
             startActivity(intent)
         }
     }
@@ -70,10 +70,10 @@ class HomeActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PUBLICAR && resultCode == RESULT_OK) {
-            // Obtener la nueva publicación del Intent
+
             val nuevaPublicacion = data?.getParcelableExtra<Publicacion>("NUEVA_PUBLICACION")
             if (nuevaPublicacion != null) {
-                publicacionAdapter.agregarPublicacion(nuevaPublicacion) // Agregar la nueva publicación
+                publicacionAdapter.agregarPublicacion(nuevaPublicacion)
             }
         }
     }

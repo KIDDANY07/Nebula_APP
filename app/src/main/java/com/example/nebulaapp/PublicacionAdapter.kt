@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PublicacionAdapter(
     private val context: Context,
-    private var publicaciones: MutableList<Publicacion> // Cambiamos a MutableList para facilitar las modificaciones
+    private var publicaciones: MutableList<Publicacion>
 ) : RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PublicacionViewHolder {
@@ -23,11 +23,11 @@ class PublicacionAdapter(
 
     override fun onBindViewHolder(holder: PublicacionViewHolder, position: Int) {
         val publicacion = publicaciones[position]
-        holder.bind(publicacion) // Llamar al método bind para mostrar la publicación
+        holder.bind(publicacion)
     }
 
     override fun getItemCount(): Int {
-        return publicaciones.size // Retornar la cantidad de publicaciones
+        return publicaciones.size
     }
 
     inner class PublicacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,16 +39,16 @@ class PublicacionAdapter(
 
         fun bind(publicacion: Publicacion) {
             // Asignar los datos a los componentes de la vista
-            tvNombreUsuario.text = publicacion.nombreUsuario // Mostrar nombre del usuario
-            tvFechaCreacion.text = publicacion.fechaCreacion // Mostrar fecha de creación
+            tvNombreUsuario.text = publicacion.nombreUsuario
+            tvFechaCreacion.text = publicacion.fechaCreacion
             tvTexto.text = publicacion.texto
 
             // Verificar si hay imagen y establecer visibilidad
             if (publicacion.imagen != null && publicacion.imagen.isNotEmpty()) {
                 ivImagen.setImageBitmap(byteArrayToBitmap(publicacion.imagen))
-                ivImagen.visibility = View.VISIBLE // Mostrar imagen
+                ivImagen.visibility = View.VISIBLE
             } else {
-                ivImagen.visibility = View.GONE // Ocultar imagen
+                ivImagen.visibility = View.GONE
             }
         }
 
@@ -60,14 +60,14 @@ class PublicacionAdapter(
 
     // Método para actualizar la lista de publicaciones
     fun updatePublicaciones(newPublicaciones: List<Publicacion>) {
-        publicaciones.clear() // Limpiar la lista actual
-        publicaciones.addAll(newPublicaciones) // Agregar nuevas publicaciones
-        notifyDataSetChanged() // Notificar cambios
+        publicaciones.clear()
+        publicaciones.addAll(newPublicaciones)
+        notifyDataSetChanged()
     }
 
     // Método para agregar una nueva publicación
     fun agregarPublicacion(publicacion: Publicacion) {
-        publicaciones.add(0, publicacion) // Añadir al inicio o al final según tu preferencia
-        notifyItemInserted(0) // Notificar la inserción en la posición 0
+        publicaciones.add(0, publicacion)
+        notifyItemInserted(0)
     }
 }

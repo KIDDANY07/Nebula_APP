@@ -44,9 +44,9 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show()
                         // Redirigir a HomeActivity
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                        intent.putExtra("USERNAME", username) // Pasar el nombre de usuario
+                        intent.putExtra("USERNAME", username)
                         startActivity(intent)
-                        finish() // Finalizar LoginActivity
+                        finish()
                     } else {
                         Toast.makeText(this@LoginActivity, "Credenciales incorrectas. Intente de nuevo.", Toast.LENGTH_SHORT).show()
                     }

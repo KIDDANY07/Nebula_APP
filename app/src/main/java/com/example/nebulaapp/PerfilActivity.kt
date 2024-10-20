@@ -27,7 +27,7 @@ class PerfilActivity : AppCompatActivity() {
     private lateinit var tvDescription: TextView
     private lateinit var btnEditProfile: Button
 
-    private var username: String? = null  // Variable para guardar el nombre del usuario
+    private var username: String? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class PerfilActivity : AppCompatActivity() {
         // Verificar que el usuario no sea nulo o vacío
         if (username.isNullOrEmpty()) {
             Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
-            finish()  // Finalizar la actividad si no se recibe el nombre del usuario
+            finish()
             return
         }
 
@@ -56,7 +56,7 @@ class PerfilActivity : AppCompatActivity() {
         // Configurar botón de edición de perfil
         btnEditProfile.setOnClickListener {
             val intent = Intent(this, ActualizarPerfilActivity::class.java)
-            intent.putExtra("USERNAME", username)  // Pasar el nombre del usuario
+            intent.putExtra("USERNAME", username)
             startActivity(intent)
         }
     }
@@ -66,12 +66,12 @@ class PerfilActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             val userData = getUserData(username)
             userData?.let {
-                tvUsername.text = "@${it.username}"  // Mostrar el nombre del usuario
-                tvDescription.text = it.description ?: "Sin descripción"  // Mostrar descripción
+                tvUsername.text = "@${it.username}"
+                tvDescription.text = it.description ?: "Sin descripción"
                 it.photo?.let { photoBytes ->
-                    ivProfileImage.setImageBitmap(byteArrayToBitmap(photoBytes))  // Cargar imagen
+                    ivProfileImage.setImageBitmap(byteArrayToBitmap(photoBytes))
                 } ?: run {
-                    ivProfileImage.setImageResource(R.drawable.user)  // Cargar imagen por defecto
+                    ivProfileImage.setImageResource(R.drawable.user)
                 }
             } ?: run {
                 Toast.makeText(this@PerfilActivity, "Error al cargar perfil.", Toast.LENGTH_SHORT).show()

@@ -7,16 +7,16 @@ data class Publicacion(
     val id: Int,
     val usuarioId: Int,
     val texto: String,
-    val imagen: ByteArray?, // Esta propiedad puede ser un ByteArray o null
-    val nombreUsuario: String, // Nombre del usuario
-    val fechaCreacion: String // Fecha de creación en formato String
+    val imagen: ByteArray?,
+    val nombreUsuario: String,
+    val fechaCreacion: String
 ) : Parcelable {
     // Constructor utilizado para crear un objeto desde un Parcel
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString() ?: "",
-        parcel.createByteArray(), // Crear el ByteArray desde el Parcel
+        parcel.createByteArray(),
         parcel.readString() ?: "",
         parcel.readString() ?: ""
     )
@@ -31,7 +31,7 @@ data class Publicacion(
         parcel.writeInt(id)
         parcel.writeInt(usuarioId)
         parcel.writeString(texto)
-        parcel.writeByteArray(imagen) // Escribir el ByteArray
+        parcel.writeByteArray(imagen)
         parcel.writeString(nombreUsuario)
         parcel.writeString(fechaCreacion)
     }

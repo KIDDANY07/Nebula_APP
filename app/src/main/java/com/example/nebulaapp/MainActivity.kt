@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)  // Asegúrate de que estás usando el layout correcto
+        setContentView(R.layout.activity_main)
 
         // Encontrar el botón para ir al LoginActivity
         val btnGoToLogin = findViewById<Button>(R.id.btnGoToLogin)
