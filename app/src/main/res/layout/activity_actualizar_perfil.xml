@@ -35,7 +35,7 @@
             android:layout_gravity="center"
             android:contentDescription="Imagen de perfil"
             android:scaleType="centerCrop"
-            android:background="@drawable/user"
+            android:background="@drawable/fotoperfil"
             android:layout_marginBottom="16dp" />
 
         <EditText

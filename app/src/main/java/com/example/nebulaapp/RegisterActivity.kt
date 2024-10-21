@@ -1,5 +1,6 @@
 package com.example.nebulaapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -27,6 +28,7 @@ class RegisterActivity : AppCompatActivity() {
         val etUsuario = findViewById<EditText>(R.id.etUsuario)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
+        val btnToLogin = findViewById<Button>(R.id.btnToLogin)
 
         btnRegister.setOnClickListener {
             val nombre = etNombre.text.toString()
@@ -50,6 +52,11 @@ class RegisterActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        btnToLogin.setOnClickListener{
+            val intent = Intent(this,LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 
