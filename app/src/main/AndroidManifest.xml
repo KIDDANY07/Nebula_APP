@@ -16,6 +16,12 @@
         android:theme="@style/Theme.NebulaAPP"
         tools:targetApi="31">
         <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserListActivity"
+            android:exported="false" />
+        <activity
             android:name=".PublicacionActivity"
             android:exported="false" />
         <activity

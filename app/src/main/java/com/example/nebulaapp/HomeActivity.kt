@@ -3,8 +3,8 @@ package com.example.nebulaapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,6 +59,14 @@ class HomeActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btnPerfil).setOnClickListener {
             val intent = Intent(this, PerfilActivity::class.java)
+            intent.putExtra("USERNAME", username)
+            startActivity(intent)
+        }
+
+        // Agregar la funcionalidad para el botón "Chat"
+        val button = findViewById<Button>(R.id.btnChat)
+        button.setOnClickListener {
+            val intent = Intent(this, UserListActivity::class.java)
             intent.putExtra("USERNAME", username)
             startActivity(intent)
         }
