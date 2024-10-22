@@ -9,16 +9,19 @@ data class Publicacion(
     val texto: String,
     val imagen: ByteArray?,
     val nombreUsuario: String,
-    val fechaCreacion: String
+    val fechaCreacion: String,
+    var likes: Int = 0
 ) : Parcelable {
+
     // Constructor utilizado para crear un objeto desde un Parcel
     constructor(parcel: Parcel) : this(
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readString() ?: "",
-        parcel.createByteArray(),
-        parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        id = parcel.readInt(),
+        usuarioId = parcel.readInt(),
+        texto = parcel.readString() ?: "",
+        imagen = parcel.createByteArray(),
+        nombreUsuario = parcel.readString() ?: "",
+        fechaCreacion = parcel.readString() ?: "",
+        likes = parcel.readInt()
     )
 
     // Método que describe el contenido (normalmente se devuelve 0)
@@ -34,6 +37,12 @@ data class Publicacion(
         parcel.writeByteArray(imagen)
         parcel.writeString(nombreUsuario)
         parcel.writeString(fechaCreacion)
+        parcel.writeInt(likes)
+    }
+
+    // Método para incrementar el contador de likes
+    fun incrementLikes() {
+        likes++
     }
 
     // Creación del objeto Parcelable
