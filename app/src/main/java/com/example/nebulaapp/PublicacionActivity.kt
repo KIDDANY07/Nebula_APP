@@ -50,29 +50,9 @@ class PublicacionActivity : AppCompatActivity() {
         username = intent.getStringExtra("USERNAME")
 
         // Configurar eventos de los botones
-        btnSeleccionarImagen.setOnClickListener {
-            abrirGaleria()
-        }
-        btnBack.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.putExtra("USERNAME", username)
-            startActivity(intent)
-            finish()
-        }
-
-        btnPublicar.setOnClickListener {
-            val texto = etTexto.text.toString().trim()
-
-            if (texto.isEmpty()) {
-                Toast.makeText(this, "Por favor, ingrese un texto.", Toast.LENGTH_SHORT).show()
-            } else {
-                username?.let {
-                    realizarPublicacion(it, texto)
-                } ?: run {
-                    Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+        btnSeleccionarImagen.setOnClickListener { abrirGaleria() }
+        btnBack.setOnClickListener { volverALaActividadAnterior() }
+        btnPublicar.setOnClickListener { publicarContenido() }
     }
 
     private fun abrirGaleria() {
@@ -97,6 +77,27 @@ class PublicacionActivity : AppCompatActivity() {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         return stream.toByteArray()
+    }
+
+    private fun publicarContenido() {
+        val texto = etTexto.text.toString().trim()
+
+        if (texto.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingrese un texto.", Toast.LENGTH_SHORT).show()
+        } else {
+            username?.let {
+                realizarPublicacion(it, texto)
+            } ?: run {
+                Toast.makeText(this, "Error: Usuario no encontrado.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun volverALaActividadAnterior() {
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra("USERNAME", username)
+        startActivity(intent)
+        finish()
     }
 
     private fun realizarPublicacion(username: String, texto: String) {
@@ -154,8 +155,8 @@ class PublicacionActivity : AppCompatActivity() {
 
                     // Insertar la publicación
                     val queryPublicacion = """
-                        INSERT INTO public.publicaciones (usuario_id, texto, imagen, fecha_creacion)
-                        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                        INSERT INTO public.publicaciones (usuario_id, texto, imagen, fecha_creacion, likes)
+                        VALUES (?, ?, ?, CURRENT_TIMESTAMP, 0)
                     """
                     preparedStatement = connection.prepareStatement(queryPublicacion).apply {
                         setInt(1, usuarioId)
@@ -171,6 +172,7 @@ class PublicacionActivity : AppCompatActivity() {
                 e.printStackTrace()
                 return@withContext false
             } finally {
+                // Cerrar recursos de manera segura
                 preparedStatement?.close()
                 connection?.close()
             }

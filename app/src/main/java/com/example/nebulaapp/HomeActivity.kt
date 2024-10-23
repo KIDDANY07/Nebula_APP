@@ -20,14 +20,22 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var publicacionAdapter: PublicacionAdapter
     private var username: String? = null
+    private var userId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        // Recibir el nombre de usuario desde LoginActivity
+        // Recibir el nombre de usuario y el ID desde LoginActivity
         username = intent.getStringExtra("USERNAME") ?: run {
             showToast("Error: Usuario no encontrado.")
+            finish()
+            return
+        }
+        userId = intent.getIntExtra("USER_ID", -1)
+
+        if (userId == -1) {
+            showToast("Error: ID de usuario no encontrado.")
             finish()
             return
         }
@@ -119,7 +127,7 @@ class HomeActivity : AppCompatActivity() {
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
-                throw e // Lanza excepción para ser manejada en el bloque try-catch de loadPublicaciones
+                throw e
             }
 
             publicaciones
@@ -143,18 +151,17 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private suspend fun haDadoLike(publicacion: Publicacion): Boolean {
-        val currentUserId = getCurrentUserId()
         return withContext(Dispatchers.IO) {
             val url = "jdbc:postgresql://10.0.2.2:5432/Nebula"
             val user = "postgres"
             val pass = "password"
-            var liked = false
+            var liked = false // Inicializa la variable
 
             try {
                 DriverManager.getConnection(url, user, pass).use { connection ->
                     val query = "SELECT COUNT(*) FROM likes WHERE usuario_id = ? AND publicacion_id = ?"
                     connection.prepareStatement(query).use { preparedStatement ->
-                        preparedStatement.setInt(1, currentUserId)
+                        preparedStatement.setInt(1, userId ?: -1)
                         preparedStatement.setInt(2, publicacion.id)
                         preparedStatement.executeQuery().use { resultSet ->
                             if (resultSet.next()) {
@@ -165,6 +172,7 @@ class HomeActivity : AppCompatActivity() {
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
+                false // Devuelve false en caso de error
             }
             liked
         }
@@ -172,7 +180,6 @@ class HomeActivity : AppCompatActivity() {
 
     private fun registrarLikeEnBaseDeDatos(publicacion: Publicacion) {
         CoroutineScope(Dispatchers.IO).launch {
-            val currentUserId = getCurrentUserId()
             val url = "jdbc:postgresql://10.0.2.2:5432/Nebula"
             val user = "postgres"
             val pass = "password"
@@ -181,7 +188,7 @@ class HomeActivity : AppCompatActivity() {
                 DriverManager.getConnection(url, user, pass).use { connection ->
                     val query = "INSERT INTO likes (usuario_id, publicacion_id) VALUES (?, ?)"
                     connection.prepareStatement(query).use { preparedStatement ->
-                        preparedStatement.setInt(1, currentUserId)
+                        preparedStatement.setInt(1, userId ?: -1)
                         preparedStatement.setInt(2, publicacion.id)
                         preparedStatement.executeUpdate()
                     }
@@ -212,11 +219,6 @@ class HomeActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun getCurrentUserId(): Int {
-        // Cambia esto según tu lógica de autenticación
-        return 1
     }
 
     private fun showToast(message: String) {

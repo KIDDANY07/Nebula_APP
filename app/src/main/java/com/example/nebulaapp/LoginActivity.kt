@@ -45,12 +45,14 @@ class LoginActivity : AppCompatActivity() {
                 showToast("Por favor, complete todos los campos.")
             } else {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val loginSuccess = loginUser(username, password)
+                    val (loginSuccess, userId) = loginUser(username, password)
                     if (loginSuccess) {
                         showToast("Inicio de sesión exitoso.")
-                        // Redirigimos a HomeActivity
-                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                        intent.putExtra("USERNAME", username)
+                        // Redirigimos a HomeActivity y pasamos la ID del usuario
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java).apply {
+                            putExtra("USERNAME", username)
+                            putExtra("USER_ID", userId)
+                        }
                         startActivity(intent)
                         finish()
                     } else {
@@ -74,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // Función suspendida para validar el usuario y la contraseña
-    private suspend fun loginUser(username: String, password: String): Boolean {
+    private suspend fun loginUser(username: String, password: String): Pair<Boolean, Int?> {
         return withContext(Dispatchers.IO) {
             var connection: Connection? = null
             var preparedStatement: PreparedStatement? = null
@@ -84,25 +86,30 @@ class LoginActivity : AppCompatActivity() {
                 // Conectamos con la base de datos
                 connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)
 
-                val query = "SELECT contrasena FROM public.usuarios WHERE usuario = ?"
+                val query = "SELECT contrasena, id FROM public.usuarios WHERE usuario = ?"
                 preparedStatement = connection.prepareStatement(query).apply {
                     setString(1, username)
                 }
 
                 resultSet = preparedStatement.executeQuery()
 
-                if (resultSet.next()) {
+                return@withContext if (resultSet.next()) {
                     val hashedPassword = resultSet.getString("contrasena")
-                    BCrypt.checkpw(password, hashedPassword)  // Verificamos la contraseña
+                    val userId = resultSet.getInt("id")
+                    if (BCrypt.checkpw(password, hashedPassword)) {
+                        Pair(true, userId)
+                    } else {
+                        Pair(false, null)
+                    }
                 } else {
                     showToast("Usuario no encontrado.")
-                    false
+                    Pair(false, null)
                 }
 
             } catch (e: SQLException) {
                 e.printStackTrace()
                 showToast("Error de conexión con la base de datos.")
-                false
+                Pair(false, null)
             } finally {
                 // Cerramos los recursos en orden inverso de apertura
                 try {
