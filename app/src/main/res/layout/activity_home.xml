@@ -6,12 +6,64 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <LinearLayout
+    <!-- Barra superior con el texto "Nébula", botón de perfil a la izquierda, y un botón de imagen de mensajes a la derecha -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:backgroundTint="#FBFFFFFF"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <!-- RelativeLayout para centrar el texto y alinear los botones de perfil y mensajes -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Botón de perfil en el extremo izquierdo, tamaño aumentado -->
+            <ImageButton
+                android:id="@+id/btnPerfil"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Perfil"
+                android:src="@drawable/perfil"
+                android:scaleType="centerInside" />
+
+            <!-- Contenedor de texto centrado -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Nébula"
+                android:textColor="#F06292"
+                android:textSize="34sp" />
+
+            <!-- Botón de mensajes en el extremo derecho, tamaño igualado al de perfil -->
+            <ImageButton
+                android:id="@+id/btnChat"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Mensajes"
+                android:src="@drawable/comentario"
+                android:scaleType="centerInside" />
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Botón de Publicar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:backgroundTint="#FBFFFFFF">
 
         <Button
             android:id="@+id/btnPublicar"
@@ -20,37 +72,18 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:backgroundTint="#F06292"
+
             android:text="Publicar"
             app:cornerRadius="8dp" />
-
-        <Button
-            android:id="@+id/btnPerfil"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F06292"
-            android:text="Perfil"
-            app:cornerRadius="8dp" />
-
-        <Button
-            android:id="@+id/btnChat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:backgroundTint="#F06292"
-            android:text="Chat"
-            app:cornerRadius="8dp" />
-
     </LinearLayout>
 
+    <!-- RecyclerView para mostrar el contenido principal -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"
-        android:background="@color/gray"/>
+        android:background="@color/gray"
+        android:padding="8dp" />
 
 </LinearLayout>
